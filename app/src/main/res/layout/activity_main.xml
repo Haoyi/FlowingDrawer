@@ -8,7 +8,7 @@
         android:clipToPadding="false"
         app:edPosition="1"
         app:edMenuSize="260dp"
-        app:edMenuBackground="#dddddd">
+        app:edMenuBackground="#000000">
 
     <!--content-->
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -30,7 +30,7 @@ public class FlowingMenuLayout extends FrameLayout {
     public final static int TYPE_DOWN_SMOOTH = 6;
 
     private int currentType = TYPE_NONE;
-    private float eventY = 0;
+    private float eventXoY = 0;
     private int topControlY;
     private int bottomControlY;
     private int topY;
@@ -47,7 +47,9 @@ public class FlowingMenuLayout extends FrameLayout {
     private float fractionCenterDown;
 
     private int centerXOffset;
+    private int centerYOffset;
     private int edgeXOffset;
+    private int edgeYOffset;
 
     private Paint mPaint;
     private int position;
@@ -80,10 +82,10 @@ public class FlowingMenuLayout extends FrameLayout {
         this.position = position;
     }
 
-    public void setClipOffsetPixels(float clipOffsetPixels, float eventY, int type) {
+    public void setClipOffsetPixels(float clipOffsetPixels, float eventXoY, int type) {
         mClipOffsetPixels = clipOffsetPixels;
         currentType = type;
-        this.eventY = eventY;
+        this.eventXoY = eventXoY;
         invalidate();
     }
 
@@ -137,24 +139,24 @@ public class FlowingMenuLayout extends FrameLayout {
                  第一部分bottomY - topY的初始值为height的0.7 倍
                  第二部分bottomY - topY变化的总长为currentPointX变化总长的6倍
                  */
-                verticalOffsetRatio = Math.abs((double) (2 * eventY - height) / height);
+                verticalOffsetRatio = Math.abs((double) (2 * eventXoY - height) / height);
                 ratio1 = verticalOffsetRatio * 3 + 1;
                 ratio2 = verticalOffsetRatio * 5 + 1;
-                if (eventY - height / 2 >= 0) {
-                    bottomY = (int) (eventY + 0.7 * height / (ratio1 + 1) + mClipOffsetPixels * 6 / (ratio2 + 1));
-                    topY = (int) (eventY - 0.7 * height / (1 + 1 / ratio1) - mClipOffsetPixels * 6 / (1 / ratio2 + 1));
-                    topControlY = (int) (-bottomY / 4 + 5 * eventY / 4);
-                    bottomControlY = (int) (bottomY / 4 + 3 * eventY / 4);
+                if (eventXoY - height / 2 >= 0) {
+                    bottomY = (int) (eventXoY + 0.7 * height / (ratio1 + 1) + mClipOffsetPixels * 6 / (ratio2 + 1));
+                    topY = (int) (eventXoY - 0.7 * height / (1 + 1 / ratio1) - mClipOffsetPixels * 6 / (1 / ratio2 + 1));
+                    topControlY = (int) (-bottomY / 4 + 5 * eventXoY / 4);
+                    bottomControlY = (int) (bottomY / 4 + 3 * eventXoY / 4);
                 } else {
                     bottomY =
-                            (int) (eventY + 0.7 * height / (1 / ratio1 + 1) + mClipOffsetPixels * 6 / (1 / ratio2 + 1));
-                    topY = (int) (eventY - 0.7 * height / (1 + ratio1) - mClipOffsetPixels * 6 / (ratio2 + 1));
-                    topControlY = (int) (topY / 4 + 3 * eventY / 4);
-                    bottomControlY = (int) (-topY / 4 + 5 * eventY / 4);
+                            (int) (eventXoY + 0.7 * height / (1 / ratio1 + 1) + mClipOffsetPixels * 6 / (1 / ratio2 + 1));
+                    topY = (int) (eventXoY - 0.7 * height / (1 + ratio1) - mClipOffsetPixels * 6 / (ratio2 + 1));
+                    topControlY = (int) (topY / 4 + 3 * eventXoY / 4);
+                    bottomControlY = (int) (-topY / 4 + 5 * eventXoY / 4);
                 }
                 mClipPath.moveTo(width - mClipOffsetPixels, topY);
                 mClipPath.cubicTo(width - mClipOffsetPixels, topControlY, width,
-                        topControlY, width, eventY);
+                        topControlY, width, eventXoY);
                 mClipPath.cubicTo(width, bottomControlY, width - mClipOffsetPixels,
                         bottomControlY, width - mClipOffsetPixels, bottomY);
                 mClipPath.lineTo(width - mClipOffsetPixels, topY);
@@ -181,7 +183,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 edgeXOffset = (int) (width * 0.75 + fractionEdge * (width / 4 + 100));
                 mClipPath.moveTo(width - mClipOffsetPixels, 0);
                 mClipPath.lineTo(edgeXOffset, 0);
-                mClipPath.quadTo(centerXOffset, eventY, edgeXOffset, height);
+                mClipPath.quadTo(centerXOffset, eventXoY, edgeXOffset, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
@@ -195,7 +197,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 edgeXOffset = (int) (width + 100 - 100 * fractionUpDown);
                 mClipPath.moveTo(width - mClipOffsetPixels, 0);
                 mClipPath.lineTo(edgeXOffset, 0);
-                mClipPath.quadTo(centerXOffset, eventY, edgeXOffset, height);
+                mClipPath.quadTo(centerXOffset, eventXoY, edgeXOffset, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
@@ -209,7 +211,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 centerXOffset = (int) (width - 0.5 * width * fractionCenterDown);
                 mClipPath.moveTo(width - mClipOffsetPixels, 0);
                 mClipPath.lineTo(width, 0);
-                mClipPath.quadTo(centerXOffset, eventY, width, height);
+                mClipPath.quadTo(centerXOffset, eventXoY, width, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
@@ -223,7 +225,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 centerXOffset = (int) (width - 0.5 * width * fractionCenterDown);
                 mClipPath.moveTo(width - mClipOffsetPixels, 0);
                 mClipPath.lineTo(width, 0);
-                mClipPath.quadTo(centerXOffset, eventY, width, height);
+                mClipPath.quadTo(centerXOffset, eventXoY, width, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, height);
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
@@ -234,16 +236,16 @@ public class FlowingMenuLayout extends FrameLayout {
                  */
                 bottomY = bottomY + 10;
                 topY = topY - 10;
-                if (eventY - height / 2 >= 0) {
-                    topControlY = (int) (-bottomY / 4 + 5 * eventY / 4);
-                    bottomControlY = (int) (bottomY / 4 + 3 * eventY / 4);
+                if (eventXoY - height / 2 >= 0) {
+                    topControlY = (int) (-bottomY / 4 + 5 * eventXoY / 4);
+                    bottomControlY = (int) (bottomY / 4 + 3 * eventXoY / 4);
                 } else {
-                    topControlY = (int) (topY / 4 + 3 * eventY / 4);
-                    bottomControlY = (int) (-topY / 4 + 5 * eventY / 4);
+                    topControlY = (int) (topY / 4 + 3 * eventXoY / 4);
+                    bottomControlY = (int) (-topY / 4 + 5 * eventXoY / 4);
                 }
                 mClipPath.moveTo(width - mClipOffsetPixels, topY);
                 mClipPath.cubicTo(width - mClipOffsetPixels, topControlY, width,
-                        topControlY, width, eventY);
+                        topControlY, width, eventXoY);
                 mClipPath.cubicTo(width, bottomControlY, width - mClipOffsetPixels,
                         bottomControlY, width - mClipOffsetPixels, bottomY);
                 mClipPath.lineTo(width - mClipOffsetPixels, topY);
@@ -279,25 +281,25 @@ public class FlowingMenuLayout extends FrameLayout {
                  第一部分bottomY - topY的初始值为height的0.7 倍
                  第二部分bottomY - topY变化的总长为currentPointX变化总长的6倍
                  */
-                verticalOffsetRatio = Math.abs((double) (2 * eventY - height) / height);
+                verticalOffsetRatio = Math.abs((double) (2 * eventXoY - height) / height);
                 ratio1 = verticalOffsetRatio * 3 + 1;
                 ratio2 = verticalOffsetRatio * 5 + 1;
-                if (eventY - height / 2 >= 0) {
-                    bottomY = (int) (eventY + 0.7 * height / (ratio1 + 1) - mClipOffsetPixels * 6 / (ratio2 + 1));
-                    topY = (int) (eventY - 0.7 * height / (1 + 1 / ratio1) + mClipOffsetPixels * 6 / (1 / ratio2 + 1));
-                    topControlY = (int) (-bottomY / 4 + 5 * eventY / 4);
-                    bottomControlY = (int) (bottomY / 4 + 3 * eventY / 4);
+                if (eventXoY - height / 2 >= 0) {
+                    bottomY = (int) (eventXoY + 0.7 * height / (ratio1 + 1) - mClipOffsetPixels * 6 / (ratio2 + 1));
+                    topY = (int) (eventXoY - 0.7 * height / (1 + 1 / ratio1) + mClipOffsetPixels * 6 / (1 / ratio2 + 1));
+                    topControlY = (int) (-bottomY / 4 + 5 * eventXoY / 4);
+                    bottomControlY = (int) (bottomY / 4 + 3 * eventXoY / 4);
                 } else {
                     bottomY =
-                            (int) (eventY + 0.7 * height / (1 / ratio1 + 1) - mClipOffsetPixels * 6 / (1 / ratio2 +
+                            (int) (eventXoY + 0.7 * height / (1 / ratio1 + 1) - mClipOffsetPixels * 6 / (1 / ratio2 +
                                                                                                                1));
-                    topY = (int) (eventY - 0.7 * height / (1 + ratio1) + mClipOffsetPixels * 6 / (ratio2 + 1));
-                    topControlY = (int) (topY / 4 + 3 * eventY / 4);
-                    bottomControlY = (int) (-topY / 4 + 5 * eventY / 4);
+                    topY = (int) (eventXoY - 0.7 * height / (1 + ratio1) + mClipOffsetPixels * 6 / (ratio2 + 1));
+                    topControlY = (int) (topY / 4 + 3 * eventXoY / 4);
+                    bottomControlY = (int) (-topY / 4 + 5 * eventXoY / 4);
                 }
                 mClipPath.moveTo(-mClipOffsetPixels, topY);
                 mClipPath.cubicTo(-mClipOffsetPixels, topControlY, 0,
-                        topControlY, 0, eventY);
+                        topControlY, 0, eventXoY);
                 mClipPath.cubicTo(0, bottomControlY, -mClipOffsetPixels,
                         bottomControlY, -mClipOffsetPixels, bottomY);
                 mClipPath.lineTo(-mClipOffsetPixels, topY);
@@ -324,7 +326,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 edgeXOffset = (int) (width * 0.75 + fractionEdge * (width / 4 + 100));
                 mClipPath.moveTo(-mClipOffsetPixels, 0);
                 mClipPath.lineTo(width - edgeXOffset, 0);
-                mClipPath.quadTo(width - centerXOffset, eventY, width - edgeXOffset, height);
+                mClipPath.quadTo(width - centerXOffset, eventXoY, width - edgeXOffset, height);
                 mClipPath.lineTo(-mClipOffsetPixels, height);
                 mClipPath.lineTo(-mClipOffsetPixels, 0);
                 break;
@@ -338,7 +340,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 edgeXOffset = (int) (width + 100 - 100 * fractionUpDown);
                 mClipPath.moveTo(-mClipOffsetPixels, 0);
                 mClipPath.lineTo(width - edgeXOffset, 0);
-                mClipPath.quadTo(width - centerXOffset, eventY, width - edgeXOffset, height);
+                mClipPath.quadTo(width - centerXOffset, eventXoY, width - edgeXOffset, height);
                 mClipPath.lineTo(-mClipOffsetPixels, height);
                 mClipPath.lineTo(-mClipOffsetPixels, 0);
                 break;
@@ -352,7 +354,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 centerXOffset = (int) (width - 0.5 * width * fractionCenterDown);
                 mClipPath.moveTo(-mClipOffsetPixels, 0);
                 mClipPath.lineTo(0, 0);
-                mClipPath.quadTo(width - centerXOffset, eventY, 0, height);
+                mClipPath.quadTo(width - centerXOffset, eventXoY, 0, height);
                 mClipPath.lineTo(-mClipOffsetPixels, height);
                 mClipPath.lineTo(-mClipOffsetPixels, 0);
                 break;
@@ -366,7 +368,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 centerXOffset = (int) (width - 0.5 * width * fractionCenterDown);
                 mClipPath.moveTo(-mClipOffsetPixels, 0);
                 mClipPath.lineTo(0, 0);
-                mClipPath.quadTo(width - centerXOffset, eventY, 0, height);
+                mClipPath.quadTo(width - centerXOffset, eventXoY, 0, height);
                 mClipPath.lineTo(-mClipOffsetPixels, height);
                 mClipPath.lineTo(-mClipOffsetPixels, 0);
                 break;
@@ -377,16 +379,16 @@ public class FlowingMenuLayout extends FrameLayout {
                  */
                 bottomY = bottomY + 10;
                 topY = topY - 10;
-                if (eventY - height / 2 >= 0) {
-                    topControlY = (int) (-bottomY / 4 + 5 * eventY / 4);
-                    bottomControlY = (int) (bottomY / 4 + 3 * eventY / 4);
+                if (eventXoY - height / 2 >= 0) {
+                    topControlY = (int) (-bottomY / 4 + 5 * eventXoY / 4);
+                    bottomControlY = (int) (bottomY / 4 + 3 * eventXoY / 4);
                 } else {
-                    topControlY = (int) (topY / 4 + 3 * eventY / 4);
-                    bottomControlY = (int) (-topY / 4 + 5 * eventY / 4);
+                    topControlY = (int) (topY / 4 + 3 * eventXoY / 4);
+                    bottomControlY = (int) (-topY / 4 + 5 * eventXoY / 4);
                 }
                 mClipPath.moveTo(-mClipOffsetPixels, topY);
                 mClipPath.cubicTo(-mClipOffsetPixels, topControlY, 0,
-                        topControlY, 0, eventY);
+                        topControlY, 0, eventXoY);
                 mClipPath.cubicTo(0, bottomControlY, -mClipOffsetPixels,
                         bottomControlY, -mClipOffsetPixels, bottomY);
                 mClipPath.lineTo(-mClipOffsetPixels, topY);

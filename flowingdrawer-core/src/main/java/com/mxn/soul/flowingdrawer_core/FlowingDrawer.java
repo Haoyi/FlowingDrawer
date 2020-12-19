@@ -34,31 +34,51 @@ public class FlowingDrawer extends ElasticDrawer {
 
     @Override
     public void openMenu(boolean animate) {
-        openMenu(animate, getHeight() / 2);
+        switch (getPosition()) {
+            case Position.LEFT:
+            case Position.RIGHT:
+                openMenu(animate, getHeight() / 2);
+                break;
+            case Position.TOP:
+            case Position.BOTTOM:
+                openMenu(animate, getWidth() / 2);
+                break;
+        }
     }
 
     @Override
-    public void openMenu(boolean animate, float y) {
+    public void openMenu(boolean animate, float posXoY) {
         int animateTo = 0;
         switch (getPosition()) {
             case Position.LEFT:
+            case Position.TOP:
                 animateTo = mMenuSize;
                 break;
             case Position.RIGHT:
+            case Position.BOTTOM:
                 animateTo = -mMenuSize;
                 break;
         }
-        animateOffsetTo(animateTo, 0, animate, y);
+        animateOffsetTo(animateTo, 0, animate, posXoY);
     }
 
     @Override
     public void closeMenu(boolean animate) {
-        closeMenu(animate, getHeight() / 2);
+        switch (getPosition()) {
+            case Position.LEFT:
+            case Position.RIGHT:
+                closeMenu(animate, getHeight() / 2);
+                break;
+            case Position.TOP:
+            case Position.BOTTOM:
+                closeMenu(animate, getWidth() / 2);
+                break;
+        }
     }
 
     @Override
-    public void closeMenu(boolean animate, float y) {
-        animateOffsetTo(0, 0, animate, y);
+    public void closeMenu(boolean animate, float posXoY) {
+        animateOffsetTo(0, 0, animate, posXoY);
     }
 
     @SuppressLint("NewApi")
@@ -66,9 +86,11 @@ public class FlowingDrawer extends ElasticDrawer {
     protected void onOffsetPixelsChanged(int offsetPixels) {
         switch (getPosition()) {
             case Position.LEFT:
+            case Position.TOP:
                 mMenuContainer.setTranslationX(offsetPixels - mMenuSize);
                 break;
             case Position.RIGHT:
+            case Position.BOTTOM:
                 mMenuContainer.setTranslationX(offsetPixels + mMenuSize);
                 break;
         }
@@ -278,7 +300,13 @@ public class FlowingDrawer extends ElasticDrawer {
     }
 
     protected boolean checkTouchSlop(float dx, float dy) {
-        return Math.abs(dx) > mTouchSlop && Math.abs(dx) > Math.abs(dy);
+        if((getPosition() == Position.LEFT ||getPosition() == Position.RIGHT)){
+            return Math.abs(dx) > mTouchSlop && Math.abs(dx) > Math.abs(dy);
+        }else if ((getPosition() == Position.TOP) || (getPosition() == Position.BOTTOM)){
+            return Math.abs(dy) > mTouchSlop && Math.abs(dy) > Math.abs(dx);
+        }else{
+            return false;
+        }
     }
 
     @Override

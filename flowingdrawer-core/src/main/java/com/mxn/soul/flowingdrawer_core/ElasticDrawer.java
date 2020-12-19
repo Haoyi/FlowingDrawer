@@ -254,7 +254,7 @@ public abstract class ElasticDrawer extends ViewGroup {
 
     public static final int INVALID_POINTER = -1;
 
-    private float eventY;
+    private float eventXoY;
 
     protected boolean isFirstPointUp;
 
@@ -367,18 +367,22 @@ public abstract class ElasticDrawer extends ViewGroup {
         static final int LEFT = 1;
         // Positions the drawer to the right of the content.
         static final int RIGHT = 2;
+        // Positions the drawer to the top of the content.
+        static final int TOP = 3;
+        // Positions the drawer to the bottom of the content.
+        static final int BOTTOM = 4;
         /**
          * Position the drawer at the start edge. This will position the drawer to the {@link #LEFT} with LTR
          * languages and
          * {@link #RIGHT} with RTL languages.
          */
-        static final int START = 3;
+        static final int START = 5;
         /**
          * Position the drawer at the end edge. This will position the drawer to the {@link #RIGHT} with LTR
          * languages and
          * {@link #LEFT} with RTL languages.
          */
-        static final int END = 4;
+        static final int END = 6;
     }
 
     protected void updateTouchAreaSize() {
@@ -511,7 +515,7 @@ public abstract class ElasticDrawer extends ViewGroup {
         invalidate();
     }
 
-    protected void smoothClose(final int eventY) {
+    protected void smoothClose(final int eventXoY) {
         endDrag();
         setDrawerState(STATE_CLOSING);
 
@@ -519,7 +523,7 @@ public abstract class ElasticDrawer extends ViewGroup {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                setOffsetPixels((Float) animation.getAnimatedValue(), eventY,
+                setOffsetPixels((Float) animation.getAnimatedValue(), eventXoY,
                         FlowingMenuLayout.TYPE_DOWN_SMOOTH);
             }
         });
@@ -544,11 +548,11 @@ public abstract class ElasticDrawer extends ViewGroup {
      * @param velocity Optional velocity if called by releasing a drag event.
      * @param animate  Whether the move is animated.
      */
-    protected void animateOffsetTo(int position, int velocity, boolean animate, float eventY) {
+    protected void animateOffsetTo(int position, int velocity, boolean animate, float eventXoY) {
         endDrag();
-        final int startX = (int) mOffsetPixels;
-        final int dx = position - startX;
-        if (dx == 0 || !animate) {
+        final int startPos = (int) mOffsetPixels;
+        final int dis = position - startPos;
+        if (dis == 0 || !animate) {
             setOffsetPixels(position, 0, FlowingMenuLayout.TYPE_NONE);
             setDrawerState(position == 0 ? STATE_CLOSED : STATE_OPEN);
             stopLayerTranslation();
@@ -557,32 +561,37 @@ public abstract class ElasticDrawer extends ViewGroup {
         int duration;
         velocity = Math.abs(velocity);
         if (velocity > 0) {
-            duration = 4 * Math.round(1000.f * Math.abs((float) dx / velocity));
+            duration = 4 * Math.round(1000.f * Math.abs((float) dis / velocity));
         } else {
-            duration = (int) (600.f * Math.abs((float) dx / mMenuSize));
+            duration = (int) (600.f * Math.abs((float) dis / mMenuSize));
         }
         duration = Math.min(duration, mMaxAnimationDuration);
-        animateOffsetTo(position, duration, eventY);
+        animateOffsetTo(position, duration, eventXoY);
     }
 
-    protected void animateOffsetTo(int position, int duration, float eventY) {
-        final int startX = (int) mOffsetPixels;
-        final int dx = position - startX;
-        if (getPosition() == Position.LEFT) {
-            if (dx > 0) {
+    protected void animateOffsetTo(int position, int duration, float eventXoY) {
+        final int startPos = (int) mOffsetPixels;
+        final int dis = position - startPos;
+        if ((getPosition() == Position.LEFT)||(getPosition() == Position.TOP)) {
+            if (dis > 0) {
                 setDrawerState(STATE_OPENING);
             } else {
                 setDrawerState(STATE_CLOSING);
             }
-        } else {
-            if (dx > 0) {
+        } else if((getPosition() == Position.RIGHT)||(getPosition() == Position.BOTTOM)){
+            if (dis > 0) {
                 setDrawerState(STATE_CLOSING);
             } else {
                 setDrawerState(STATE_OPENING);
             }
         }
-        mScroller.startScroll(startX, 0, dx, 0, duration);
-        this.eventY = eventY;
+        if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+            mScroller.startScroll(startPos, 0, dis, 0, duration);
+        }else if ((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+            mScroller.startScroll(0, startPos, 0, dis, duration);
+        }
+
+        this.eventXoY = eventXoY;
         startLayerTranslation();
         postAnimationInvalidate();
     }
@@ -592,12 +601,12 @@ public abstract class ElasticDrawer extends ViewGroup {
      *
      * @param offsetPixels The number of pixels to offset the content by.
      */
-    protected void setOffsetPixels(float offsetPixels, float eventY, int type) {
+    protected void setOffsetPixels(float offsetPixels, float eventXoY, int type) {
         final int oldOffset = (int) mOffsetPixels;
         final int newOffset = (int) offsetPixels;
 
         mOffsetPixels = offsetPixels;
-        mMenuView.setClipOffsetPixels(mOffsetPixels, eventY, type);
+        mMenuView.setClipOffsetPixels(mOffsetPixels, eventXoY, type);
         if (newOffset != oldOffset) {
             onOffsetPixelsChanged(newOffset);
             mMenuVisible = newOffset != 0;
@@ -938,18 +947,33 @@ public abstract class ElasticDrawer extends ViewGroup {
      * Callback when each frame in the drawer animation should be drawn.
      */
     private void postAnimationInvalidate() {
-        if (mScroller.computeScrollOffset()) {
-            final int oldX = (int) mOffsetPixels;
-            final int x = mScroller.getCurrX();
+        int oldPos = (int) mOffsetPixels;
+        int newPos = 0;
+        int finalPos = 0;
 
-            if (x != oldX) {
+
+        if (mScroller.computeScrollOffset()) {
+            if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+                newPos = mScroller.getCurrX();
+            }else if((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+                newPos = mScroller.getCurrY();
+            }
+
+            if (newPos != oldPos) {
                 if (mDrawerState == STATE_OPENING) {
-                    setOffsetPixels(x, eventY, FlowingMenuLayout.TYPE_UP_AUTO);
+                    setOffsetPixels(newPos, eventXoY, FlowingMenuLayout.TYPE_UP_AUTO);
                 } else if (mDrawerState == STATE_CLOSING) {
-                    setOffsetPixels(x, eventY, FlowingMenuLayout.TYPE_DOWN_AUTO);
+                    setOffsetPixels(newPos, eventXoY, FlowingMenuLayout.TYPE_DOWN_AUTO);
                 }
             }
-            if (x != mScroller.getFinalX()) {
+
+            if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+                finalPos = mScroller.getFinalX();
+            }else if((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+                finalPos = mScroller.getFinalY();
+            }
+
+            if (newPos != finalPos) {
                 postOnAnimation(mDragRunnable);
                 return;
             }
@@ -958,10 +982,15 @@ public abstract class ElasticDrawer extends ViewGroup {
             completeAnimation();
         } else if (mDrawerState == STATE_CLOSING) {
             mScroller.abortAnimation();
-            final int finalX = mScroller.getFinalX();
-            mMenuVisible = finalX != 0;
-            setOffsetPixels(finalX, 0, FlowingMenuLayout.TYPE_NONE);
-            setDrawerState(finalX == 0 ? STATE_CLOSED : STATE_OPEN);
+
+            if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+                finalPos = mScroller.getFinalX();
+            }else if((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+                finalPos = mScroller.getFinalY();
+            }
+            mMenuVisible = finalPos != 0;
+            setOffsetPixels(finalPos, 0, FlowingMenuLayout.TYPE_NONE);
+            setDrawerState(finalPos == 0 ? STATE_CLOSED : STATE_OPEN);
             stopLayerTranslation();
         }
 
@@ -972,11 +1001,16 @@ public abstract class ElasticDrawer extends ViewGroup {
      */
     private void completeAnimation() {
         mScroller.abortAnimation();
-        final int finalX = mScroller.getFinalX();
-        flowDown(finalX);
+        int finalPos = 0;
+        if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+            finalPos = mScroller.getFinalX();
+        }else if((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+            finalPos = mScroller.getFinalY();
+        }
+        flowDown(finalPos);
     }
 
-    private void flowDown(final int finalX) {
+    private void flowDown(final int finalPos) {
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -988,9 +1022,9 @@ public abstract class ElasticDrawer extends ViewGroup {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (mDrawerState == STATE_OPENING) {
-                    mMenuVisible = finalX != 0;
-                    setOffsetPixels(finalX, 0, FlowingMenuLayout.TYPE_NONE);
-                    setDrawerState(finalX == 0 ? STATE_CLOSED : STATE_OPEN);
+                    mMenuVisible = finalPos != 0;
+                    setOffsetPixels(finalPos, 0, FlowingMenuLayout.TYPE_NONE);
+                    setDrawerState(finalPos == 0 ? STATE_CLOSED : STATE_OPEN);
                     stopLayerTranslation();
                 }
             }

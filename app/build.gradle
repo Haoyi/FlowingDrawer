@@ -22,10 +22,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.squareup.picasso:picasso:2.5.0'
     implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'com.mxn.soul:flowingdrawer-core:2.1.0'
+    //implementation 'com.mxn.soul:flowingdrawer-core:2.1.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation project(path: ':flowingdrawer-core')
 //    implementation project(':flowingdrawer-core')
 }
