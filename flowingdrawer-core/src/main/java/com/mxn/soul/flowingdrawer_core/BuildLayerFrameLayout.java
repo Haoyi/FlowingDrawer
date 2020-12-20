@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 /**
@@ -14,6 +15,8 @@ import android.widget.FrameLayout;
  * BuildLayerFrameLayout
  */
 public class BuildLayerFrameLayout extends FrameLayout {
+
+    private static final String TAG = "BuildLayerFrameLayout";
 
     private boolean mChanged;
 
@@ -64,7 +67,6 @@ public class BuildLayerFrameLayout extends FrameLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && mHardwareLayersEnabled) {
             post(new Runnable() {
                 @Override

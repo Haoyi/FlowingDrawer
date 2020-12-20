@@ -20,13 +20,18 @@ final class ViewHelper {
     }
 
     @SuppressLint("NewApi")
+    static int getRight(View v) {
+        return (int) (v.getRight() + v.getTranslationX());
+    }
+
+    @SuppressLint("NewApi")
     static int getTop(View v) {
         return (int) (v.getTop() + v.getTranslationY());
     }
 
     @SuppressLint("NewApi")
-    static int getRight(View v) {
-        return (int) (v.getRight() + v.getTranslationX());
+    static int getBottom(View v) {
+        return (int) (v.getBottom() + v.getTranslationY());
     }
 
     @SuppressLint("NewApi")

@@ -37,7 +37,7 @@ public abstract class ElasticDrawer extends ViewGroup {
     /**
      * Indicates whether debug code should be enabled.
      */
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     /**
      * The time between each frame when animating the drawer.
      */
@@ -399,16 +399,15 @@ public abstract class ElasticDrawer extends ViewGroup {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        if (getChildCount() != 2) {
-            throw new IllegalStateException(
-                    "child count isn't equal to 2 , content and Menu view must be added in xml .");
-        }
+//        if (getChildCount() != 2) {
+//            throw new IllegalStateException(
+//                    "child count isn't equal to 2 , content and Menu view must be added in xml .");
+//        }
         View content = getChildAt(0);
         if (content != null) {
             removeView(content);
             mContentContainer.removeAllViews();
-            mContentContainer
-                    .addView(content, new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            mContentContainer.addView(content, new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         } else {
             throw new IllegalStateException(
                     "content view must be added in xml .");
@@ -869,17 +868,34 @@ public abstract class ElasticDrawer extends ViewGroup {
         return velocityTracker.getXVelocity();
     }
 
-    protected boolean canChildrenScroll(int dx, int x, int y) {
+    protected float getYVelocity(VelocityTracker velocityTracker) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            return velocityTracker.getYVelocity(mActivePointerId);
+        }
+
+        return velocityTracker.getYVelocity();
+    }
+    protected boolean canChildrenScroll(int dis, int x, int y) {
         boolean canScroll = false;
 
         switch (getPosition()) {
             case Position.LEFT:
             case Position.RIGHT:
                 if (!mMenuVisible) {
-                    canScroll = canChildScrollHorizontally(mContentContainer, false, dx,
+                    canScroll = canChildScrollHorizontally(mContentContainer, false, dis,
                             x - ViewHelper.getLeft(mContentContainer), y - ViewHelper.getTop(mContentContainer));
                 } else {
-                    canScroll = canChildScrollHorizontally(mMenuContainer, false, dx,
+                    canScroll = canChildScrollHorizontally(mMenuContainer, false, dis,
+                            x - ViewHelper.getLeft(mMenuContainer), y - ViewHelper.getTop(mContentContainer));
+                }
+                break;
+            case Position.TOP:
+            case Position.BOTTOM:
+                if (!mMenuVisible) {
+                    canScroll = canChildScrollVertically(mContentContainer, false, dis,
+                            x - ViewHelper.getLeft(mContentContainer), y - ViewHelper.getTop(mContentContainer));
+                } else {
+                    canScroll = canChildScrollVertically(mMenuContainer, false, dis,
                             x - ViewHelper.getLeft(mMenuContainer), y - ViewHelper.getTop(mContentContainer));
                 }
                 break;
@@ -922,6 +938,43 @@ public abstract class ElasticDrawer extends ViewGroup {
 
         return checkV && mOnInterceptMoveEventListener.isViewDraggable(v, dx, x, y);
     }
+
+    /**
+     * Tests scrollability within child views of v given a delta of dx.
+     *
+     * @param v      View to test for horizontal scrollability
+     * @param checkV Whether the view should be checked for draggability
+     * @param dy     Delta scrolled in pixels
+     * @param x      X coordinate of the active touch point
+     * @param y      Y coordinate of the active touch point
+     *
+     * @return true if child views of v can be scrolled by delta of dx.
+     */
+    protected boolean canChildScrollVertically(View v, boolean checkV, int dy, int x, int y) {
+        if (v instanceof ViewGroup) {
+            final ViewGroup group = (ViewGroup) v;
+
+            final int count = group.getChildCount();
+            // Count backwards - let topmost views consume scroll distance first.
+            for (int i = count - 1; i >= 0; i--) {
+                final View child = group.getChildAt(i);
+
+                final int childLeft = child.getLeft() + supportGetTranslationX(child);
+                final int childRight = child.getRight() + supportGetTranslationX(child);
+                final int childTop = child.getTop() + supportGetTranslationY(child);
+                final int childBottom = child.getBottom() + supportGetTranslationY(child);
+
+                if (x >= childLeft && x < childRight && y >= childTop && y < childBottom
+                        && canChildScrollVertically(child, true, dy, x - childLeft, y - childTop)) {
+                    return true;
+                }
+            }
+        }
+
+        return checkV && mOnInterceptMoveEventListener.isViewDraggable(v, dy, x, y);
+    }
+
+
 
     private int supportGetTranslationY(View v) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
