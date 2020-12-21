@@ -387,9 +387,18 @@ public abstract class ElasticDrawer extends ViewGroup {
 
     protected void updateTouchAreaSize() {
         if (mTouchMode == TOUCH_MODE_BEZEL) {
-            mTouchSize = mTouchBezelSize;
+            if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+                mTouchSize = mTouchBezelSize;
+            } else if((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+                mTouchSize = mTouchBezelSize*2;
+            }
         } else if (mTouchMode == TOUCH_MODE_FULLSCREEN) {
-            mTouchSize = getMeasuredWidth();
+            if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)) {
+                mTouchSize = getMeasuredWidth();
+            } else if((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+                mTouchSize = getMeasuredHeight();
+            }
+
         } else {
             mTouchSize = 0;
         }
