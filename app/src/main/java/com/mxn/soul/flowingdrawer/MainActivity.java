@@ -9,9 +9,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private RecyclerView rvFeed;
     private FlowingDrawer mDrawer;
@@ -43,6 +48,17 @@ public class MainActivity extends AppCompatActivity {
                 mDrawer.toggleMenu();
             }
         });
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            mDrawer.toggleMenu();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void setupFeed() {
