@@ -199,10 +199,10 @@ public class FlowingDrawer extends ElasticDrawer {
                 contentTouch = ViewHelper.getLeft(mMenuContainer) > x;
                 break;
             case Position.TOP:
-                contentTouch = ViewHelper.getTop(mMenuContainer) < y;
+                contentTouch = ViewHelper.getBottom(mMenuContainer) < y;
                 break;
             case Position.BOTTOM:
-                contentTouch = ViewHelper.getBottom(mMenuContainer) > y;
+                contentTouch = ViewHelper.getTop(mMenuContainer) > y;
                 break;
         }
         return contentTouch;
@@ -255,15 +255,7 @@ public class FlowingDrawer extends ElasticDrawer {
         if (mMenuVisible && mTouchMode == TOUCH_MODE_FULLSCREEN) {
             return true;
         }
-        Log.d(TAG,"++++++"+"x="+x+",y="+y+",dis="+dis);
-        Log.d(TAG,"++++++"+",mMenuVisible="+mMenuVisible+",mInitialMotionX="+mInitialMotionX+",mInitialMotionY="+mInitialMotionY+",mOffsetPixels="+mOffsetPixels+",mTouchSize="+mTouchSize);
 
-
-        Log.d(TAG,"111con1111="+(!mMenuVisible && mInitialMotionX <= mTouchSize && (dis > 0)));
-        Log.d(TAG,"111con2222="+(mMenuVisible && x <= mOffsetPixels));
-
-        Log.d(TAG,"333con1111="+(!mMenuVisible && mInitialMotionY <= mTouchSize && (dis > 0)));
-        Log.d(TAG,"333con2222="+(mMenuVisible && y <= mOffsetPixels));
         switch (getPosition()) {
             case Position.LEFT:
                 return (!mMenuVisible && mInitialMotionX <= mTouchSize && (dis > 0)) // Drawer closed
@@ -390,39 +382,33 @@ public class FlowingDrawer extends ElasticDrawer {
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = ev.getAction() & MotionEvent.ACTION_MASK;
+
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            Log.d(TAG,"ACTION_UP");
+
             mActivePointerId = INVALID_POINTER;
             mIsDragging = false;
+
             if (mVelocityTracker != null) {
-                Log.d(TAG,"mVelocityTracker");
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;
             }
             if((getPosition()==Position.LEFT)||getPosition()==Position.RIGHT){
-                Log.d(TAG,"12121");
                 if (Math.abs(mOffsetPixels) > mMenuSize / 2) {
-                    Log.d(TAG,"232332");
                     openMenu(true, ev.getY());
                 } else {
-                    Log.d(TAG,"3434");
                     closeMenu(true, ev.getY());
                 }
             }else if ((getPosition()==Position.TOP)||getPosition()==Position.BOTTOM){
-                Log.d(TAG,"qqqqqq");
                 if (Math.abs(mOffsetPixels) > mMenuSize / 2) {
-                    Log.d(TAG,"1q1q1q");
                     openMenu(true, ev.getX());
                 } else {
-                    Log.d(TAG,"2w2w2w2w");
                     closeMenu(true, ev.getX());
                 }
             }
-Log.d(TAG,"11111111111");
             return false;
         }
+
         if (action == MotionEvent.ACTION_DOWN && mMenuVisible && isCloseEnough()) {
-            Log.d(TAG,"222222");
             setOffsetPixels(0, 0, FlowingMenuLayout.TYPE_NONE);
             stopAnimation();
             setDrawerState(STATE_CLOSED);
@@ -443,22 +429,17 @@ Log.d(TAG,"11111111111");
         }
 
         if (!mMenuVisible && !mIsDragging && mTouchMode == TOUCH_MODE_NONE) {
-            Log.d(TAG,"33333");
             return false;
         }
 
         if (action != MotionEvent.ACTION_DOWN && mIsDragging) {
-            Log.d(TAG,"444444");
             return true;
         }
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                Log.d(TAG,"MotionEvent.ACTION_DOWN");
                 mLastMotionX = mInitialMotionX = ev.getX();
                 mLastMotionY = mInitialMotionY = ev.getY();
-                Log.d(TAG,"ACTION_DOWN,mInitialMotionX="+mInitialMotionX);
-                Log.d(TAG,"ACTION_DOWN,mInitialMotionY="+mInitialMotionY);
                 final boolean allowDrag = onDownAllowDrag();
                 mActivePointerId = ev.getPointerId(0);
 
@@ -471,7 +452,6 @@ Log.d(TAG,"11111111111");
             }
 
             case MotionEvent.ACTION_MOVE: {
-                Log.d(TAG,"MotionEvent.ACTION_MOVE");
                 final int activePointerId = mActivePointerId;
                 if (activePointerId == INVALID_POINTER) {
                     // If we don't have a valid id, the touch down wasn't on content.
@@ -523,7 +503,6 @@ Log.d(TAG,"11111111111");
                 break;
             }
             case MotionEvent.ACTION_POINTER_UP:
-                Log.d(TAG,"MotionEvent.ACTION_POINTER_UP");
                 onPointerUp(ev);
                 mLastMotionX = ev.getX(ev.findPointerIndex(mActivePointerId));
                 mLastMotionY = ev.getY(ev.findPointerIndex(mActivePointerId));
@@ -564,7 +543,12 @@ Log.d(TAG,"11111111111");
                     mIsDragging = false;
                     mActivePointerId = INVALID_POINTER;
                     endDrag();
-                    closeMenu(true, ev.getY());
+                    if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)){
+                        closeMenu(true, ev.getY());
+                    } else if ((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
+                        closeMenu(true, ev.getX());
+                    }
+
                     return false;
                 }
                 if (mIsDragging) {
@@ -575,7 +559,7 @@ Log.d(TAG,"11111111111");
 
                     if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)){
                         dis = x - mLastMotionX;
-                    } else if ((getPosition() == Position.LEFT)||(getPosition() == Position.RIGHT)){
+                    } else if ((getPosition() == Position.TOP)||(getPosition() == Position.BOTTOM)){
                         dis = y - mLastMotionY;
                     }
 
