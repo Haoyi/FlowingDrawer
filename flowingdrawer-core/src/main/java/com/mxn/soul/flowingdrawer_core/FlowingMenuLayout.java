@@ -458,11 +458,11 @@ public class FlowingMenuLayout extends FrameLayout {
                     topControlX = (int) (topX / 4 + 3 * eventXoY / 4);
                     bottomControlX = (int) (-topX / 4 + 5 * eventXoY / 4);
                 }
-                mClipPath.moveTo(topX,height - mClipOffsetPixels);
-                mClipPath.cubicTo(topControlX, height - mClipOffsetPixels, topControlX, height,
-                        height, eventXoY);
+                mClipPath.moveTo(topX, height - mClipOffsetPixels);
+                mClipPath.cubicTo(topControlX, height - mClipOffsetPixels,topControlX, height,
+                        eventXoY, height);
                 mClipPath.cubicTo(bottomControlX, height, bottomControlX, height - mClipOffsetPixels,
-                        bottomX,height - mClipOffsetPixels);
+                        bottomX, height - mClipOffsetPixels);
                 mClipPath.lineTo(topX,height - mClipOffsetPixels);
                 break;
             case TYPE_UP_AUTO:
