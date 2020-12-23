@@ -344,6 +344,54 @@ public class FlowingDrawer extends ElasticDrawer {
                 }
                 break;
             }
+            case Position.TOP: {
+                if (mIsDragging) {
+                    if (mDrawerState == STATE_DRAGGING_CLOSE) {
+                        closeMenu(true, x);
+                        return;
+                    }
+                    if (mDrawerState == STATE_DRAGGING_OPEN && willCloseEnough()) {
+                        smoothClose(x);
+                        return;
+                    }
+                    mVelocityTracker.computeCurrentVelocity(1000, mMaxVelocity);
+                    final int initialVelocity = (int) getYVelocity(mVelocityTracker);
+                    mLastMotionY = y;
+                    animateOffsetTo(initialVelocity > 0 ? mMenuSize : 0, initialVelocity, true, x);
+                } else if (isFirstPointUp) {
+                    isFirstPointUp = false;
+                    return;
+                }
+                // Close the menu when content is clicked while the menu is visible.
+                else if (mMenuVisible) {
+                    closeMenu(true, x);
+                }
+                break;
+            }
+            case Position.BOTTOM: {
+                if (mIsDragging) {
+                    if (mDrawerState == STATE_DRAGGING_CLOSE) {
+                        closeMenu(true, x);
+                        return;
+                    }
+                    if (mDrawerState == STATE_DRAGGING_OPEN && willCloseEnough()) {
+                        smoothClose(x);
+                        return;
+                    }
+                    mVelocityTracker.computeCurrentVelocity(1000, mMaxVelocity);
+                    final int initialVelocity = (int) getYVelocity(mVelocityTracker);
+                    mLastMotionX = y;
+                    animateOffsetTo(initialVelocity > 0 ? 0 : -mMenuSize, initialVelocity, true, x);
+                } else if (isFirstPointUp) {
+                    isFirstPointUp = false;
+                    return;
+                }
+                // Close the menu when content is clicked while the menu is visible.
+                else if (mMenuVisible) {
+                    closeMenu(true, x);
+                }
+                break;
+            }
         }
     }
 

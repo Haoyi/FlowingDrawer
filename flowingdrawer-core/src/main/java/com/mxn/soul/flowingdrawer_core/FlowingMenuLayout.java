@@ -127,6 +127,7 @@ public class FlowingMenuLayout extends FrameLayout {
     private void drawLeftMenu() {
         switch (currentType) {
             case TYPE_NONE:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_NONE");
                 /**
                  * 空状态
                  * mClipOffsetPixels =0 or mClipOffsetPixels = width
@@ -138,6 +139,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(0, 0);
                 break;
             case TYPE_UP_MANUAL:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_UP_MANUAL");
                 /**
                  * 手动打开状态
                  verticalOffsetRatio = 0 when currentPointY = 0.5 * height ;
@@ -173,6 +175,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(width - mClipOffsetPixels, topY);
                 break;
             case TYPE_UP_AUTO:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_UP_AUTO");
                 /**
                  * 自动打开状态
                  fraction变化范围是0-1
@@ -199,6 +202,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
             case TYPE_UP_DOWN:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_UP_DOWN");
                 /**
                  * 打开后回弹状态
                  centerXOffset初始值width + 150,变化到width
@@ -213,6 +217,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
             case TYPE_DOWN_AUTO:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_DOWN_AUTO");
                 /**
                  * 自动关闭状态
                  edgeXOffset值width
@@ -227,6 +232,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
             case TYPE_DOWN_MANUAL:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_DOWN_MANUAL");
                 /**
                  * 手动关闭状态
                  edgeXOffset值width
@@ -241,6 +247,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(width - mClipOffsetPixels, 0);
                 break;
             case TYPE_DOWN_SMOOTH:
+                Log.d(TAG,"drawLeftMenu"+"TYPE_DOWN_SMOOTH");
                 /**
                  * 手动打开不到一半,松手后恢复到初始状态
                  每次绘制两边纵坐标增加10
@@ -420,10 +427,10 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(width, height);
                 mClipPath.lineTo(0, height);
                 mClipPath.lineTo(0, 0);
-                Log.d(TAG,"TYPE_NONE");
+                Log.d(TAG,"drawTopMenu"+"TYPE_NONE");
                 break;
             case TYPE_UP_MANUAL:
-                Log.d(TAG,"TYPE_UP_MANUAL");
+                Log.d(TAG,"drawTopMenu"+"TYPE_UP_MANUAL");
                 /**
                  * 手动打开状态
                  verticalOffsetRatio = 0 when currentPointY = 0.5 * height ;
@@ -459,7 +466,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(topX,height - mClipOffsetPixels);
                 break;
             case TYPE_UP_AUTO:
-                Log.d(TAG,"TYPE_UP_AUTO");
+                Log.d(TAG,"drawTopMenu"+"TYPE_UP_AUTO");
                 /**
                  * 自动打开状态
                  fraction变化范围是0-1
@@ -486,7 +493,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(0, height-mClipOffsetPixels);
                 break;
             case TYPE_UP_DOWN:
-                Log.d(TAG,"TYPE_UP_DOWN");
+                Log.d(TAG,"drawTopMenu"+"TYPE_UP_DOWN");
                 /**
                  * 打开后回弹状态
                  centerXOffset初始值width + 150,变化到width
@@ -501,7 +508,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(0, height-mClipOffsetPixels);
                 break;
             case TYPE_DOWN_AUTO:
-                Log.d(TAG,"TYPE_DOWN_AUTO");
+                Log.d(TAG,"drawTopMenu"+"TYPE_DOWN_AUTO");
                 /**
                  * 自动关闭状态
                  edgeXOffset值width
@@ -516,7 +523,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(0, height - mClipOffsetPixels);
                 break;
             case TYPE_DOWN_MANUAL:
-                Log.d(TAG,"TYPE_DOWN_MANUAL");
+                Log.d(TAG,"drawTopMenu"+"TYPE_DOWN_MANUAL");
                 /**
                  * 手动关闭状态
                  edgeXOffset值width
@@ -531,7 +538,7 @@ public class FlowingMenuLayout extends FrameLayout {
                 mClipPath.lineTo(0, height - mClipOffsetPixels);
                 break;
             case TYPE_DOWN_SMOOTH:
-                Log.d(TAG,"TYPE_DOWN_SMOOTH");
+                Log.d(TAG,"drawTopMenu"+"TYPE_DOWN_SMOOTH");
                 /**
                  * 手动打开不到一半,松手后恢复到初始状态
                  每次绘制两边纵坐标增加10
