@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 //apply plugin: 'com.github.dcendents.android-maven'
 //apply plugin: 'com.jfrog.bintray'
 
@@ -8,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 100
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -25,6 +26,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'com.nineoldandroids:library:2.4.0'
+}
+
+
+publish {
+    userOrg = 'haoyi'//bintray.com用户名
+    groupId = 'com.xiaoyan'//jcenter上的路径
+    artifactId = 'flowingdrawer_core'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = 'a drawer swipe from four directions with flowing effects.'
+    website = 'https://github.com/Haoyi/FlowingDrawer'
 }
 
 /**
