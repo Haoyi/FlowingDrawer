@@ -1,11 +1,11 @@
 # FlowingDrawer 
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlowingDrawer-green.svg?style=flat)](https://android-arsenal.com/details/1/2658)
-[![travis-ic](https://travis-ci.org/mxn21/FlowingDrawer.svg?branch=master)](https://travis-ci.org/mxn21/FlowingDrawer)
+基于“https://github.com/mxn21/FlowingDrawer” 做了更新，使用了AndroidX，而且增加了从上下滑出的效果。
+由于自己项目中需要使用到，所以修改了包名。
 
 ![Showcase](/screen.gif)
 
-swipe right to display drawer with flowing effects.
+swipe four directions to display drawer with flowing effects.
 
 
 ## Download
@@ -20,7 +20,7 @@ Gradle:
     }
 
     dependencies {
-        implementation 'com.mxn.soul:flowingdrawer-core:2.1.0'
+        implementation 'com.xiaoyan:flowingdrawer-core:1.0.0'
         implementation 'com.nineoldandroids:library:2.4.0'
     }
 ```
