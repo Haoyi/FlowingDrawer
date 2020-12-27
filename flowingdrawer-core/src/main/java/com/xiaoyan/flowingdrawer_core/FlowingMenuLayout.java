@@ -1,4 +1,4 @@
-package com.mxn.soul.flowingdrawer_core;
+package com.xiaoyan.flowingdrawer_core;
 
 import android.content.Context;
 import android.graphics.Canvas;

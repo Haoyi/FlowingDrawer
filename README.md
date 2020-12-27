@@ -38,7 +38,7 @@ Gradle:
 activity_main.xml:
 
 ```xml
-    <com.mxn.soul.flowingdrawer_core.FlowingDrawer
+    <com.xiaoyan.flowingdrawer_core.FlowingDrawer
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/drawerlayout"
@@ -57,7 +57,7 @@ activity_main.xml:
                 android:layout_height="match_parent"/>
 
         <!--menu-->
-        <com.mxn.soul.flowingdrawer_core.FlowingMenuLayout
+        <com.xiaoyan.flowingdrawer_core.FlowingMenuLayout
                 android:id="@+id/menulayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -67,9 +67,9 @@ activity_main.xml:
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-        </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
+        </com.xiaoyan.flowingdrawer_core.FlowingMenuLayout>
 
-    </com.mxn.soul.flowingdrawer_core.FlowingDrawer>
+    </com.xiaoyan.flowingdrawer_core.FlowingDrawer>
 ```
 
 To use a FlowingDrawer, position FlowingDrawer as the root , position your primary content view as the

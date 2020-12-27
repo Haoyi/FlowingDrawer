@@ -1,5 +1,5 @@
 
-package com.mxn.soul.flowingdrawer_core;
+package com.xiaoyan.flowingdrawer_core;
 
 import android.view.animation.Interpolator;
 

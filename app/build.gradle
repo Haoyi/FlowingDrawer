@@ -4,7 +4,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.mxn.soul.flowingdrawer"
+        applicationId "com.xiaoyan.flowingdrawer"
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 120

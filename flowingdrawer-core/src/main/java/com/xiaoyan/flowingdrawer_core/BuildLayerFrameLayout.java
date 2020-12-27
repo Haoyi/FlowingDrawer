@@ -1,5 +1,5 @@
 
-package com.mxn.soul.flowingdrawer_core;
+package com.xiaoyan.flowingdrawer_core;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 /**
