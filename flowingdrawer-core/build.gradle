@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
-//apply plugin: 'com.github.dcendents.android-maven'
-//apply plugin: 'com.jfrog.bintray'
+//apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 30
@@ -29,23 +29,23 @@ dependencies {
 }
 
 
-publish {
-    userOrg = 'haoyi'//bintray.com用户名
-    groupId = 'com.xiaoyan'//jcenter上的路径
-    artifactId = 'flowingdrawer_core'//项目名称
-    publishVersion = '1.0.0'//版本号
-    desc = 'a drawer swipe from four directions with flowing effects.'
-    website = 'https://github.com/Haoyi/FlowingDrawer'
-}
+//publish {
+//    userOrg = 'haoyi'//bintray.com用户名
+//    groupId = 'com.xiaoyan'//jcenter上的路径
+//    artifactId = 'flowingdrawer_core'//项目名称
+//    publishVersion = '1.0.0'//版本号
+//    desc = 'a drawer swipe from four directions with flowing effects.'
+//    website = 'https://github.com/Haoyi/FlowingDrawer'
+//}
 
-/**
+
 // 根节点添加
-version = "2.1.0"
+version = "1.0.0"
 
-def siteUrl = 'https://github.com/mxn21/FlowingDrawer'    // project homepage
-def gitUrl = 'https://github.com/mxn21/FlowingDrawer.git' // project git
+def siteUrl = 'https://github.com/Haoyi/FlowingDrawer'    // project homepage
+def gitUrl = 'https://github.com/Haoyi/FlowingDrawer.git' // project git
 
-group = "com.mxn.soul"
+group = "com.xiaoyan"
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -67,9 +67,9 @@ install {
                 }
                 developers {
                     developer {
-                        id 'mxn21'
-                        name 'mxn'
-                        email 'mxny21@gmail.com'
+                        id 'haoyi'
+                        name 'haoyi'
+                        email 'howean@live.com'
                     }
                 }
                 scm {
@@ -85,7 +85,7 @@ install {
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+    classifier  = 'sources'
 }
 
 task javadoc(type: Javadoc) {
@@ -121,4 +121,3 @@ bintray {
         publish = true
     }
 }
- **/
