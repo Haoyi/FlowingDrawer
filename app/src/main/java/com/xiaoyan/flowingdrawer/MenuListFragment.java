@@ -51,7 +51,7 @@ public class MenuListFragment extends Fragment {
     private void setupHeader() {
         int avatarSize = getResources().getDimensionPixelSize(R.dimen.global_menu_avatar_size);
         String profilePhoto = getResources().getString(R.string.user_profile_photo);
-        Picasso.with(getActivity())
+        Picasso.get()
                 .load(profilePhoto)
                 .placeholder(R.drawable.img_circle_placeholder)
                 .resize(avatarSize, avatarSize)

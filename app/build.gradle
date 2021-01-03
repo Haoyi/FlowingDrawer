@@ -7,7 +7,7 @@ android {
         applicationId "com.xiaoyan.flowingdrawer"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 110
+        versionCode 100
         versionName "1.0.0"
     }
     buildTypes {
@@ -20,7 +20,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.squareup.picasso:picasso:2.5.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.nineoldandroids:library:2.4.0'
     //implementation 'com.mxn.soul:flowingdrawer-core:2.1.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
